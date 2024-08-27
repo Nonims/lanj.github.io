@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de HTML</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            max-width: 1200px;
+            margin: 20px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-family: monospace;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Visualizador de HTML</h1>
+        <textarea id="htmlInput" placeholder="Escribe o pega tu código HTML aquí..."></textarea>
+        <textarea id="cssInput" placeholder="Escribe o pega tu código CSS aquí..."></textarea>
+        <textarea id="jsInput" placeholder="Escribe o pega tu código JS aquí..."></textarea>
+        <button onclick="preview()">Previsualizar</button>
+        <button onclick="downloadHTML()">Descargar HTML</button>
+        <iframe id="previewFrame"></iframe>
+    </div>
+
+    <script>
+        function preview() {
+            const html = document.getElementById('htmlInput').value;
+            const css = document.getElementById('cssInput').value;
+            const js = document.getElementById('jsInput').value;
+
+            const iframe = document.getElementById('previewFrame');
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+            iframeDoc.open();
+            iframeDoc.write(`
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Vista Previa</title>
+                    <style>${css}</style>
+                </head>
+                <body>
+                    ${html}
+                    <script>${js}</script>
+                </body>
+                </html>
+            `);
+            iframeDoc.close();
+        }
+
+        function downloadHTML() {
+            const html = document.getElementById('htmlInput').value;
+            const css = document.getElementById('cssInput').value;
+            const js = document.getElementById('jsInput').value;
+
+            const fullHTML = `
+                <!DOCTYPE html>
+                <html lang="es">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Documento HTML</title>
+                    <style>${css}</style>
+                </head>
+                <body>
+                    ${html}
+                    <script>${js}</script>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob([fullHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'documento.html';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+    </script>
+</body>
+</html>
